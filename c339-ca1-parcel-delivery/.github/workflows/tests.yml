@@ -1,4 +1,3 @@
-
 name: Unit Tests
 
 on:
@@ -6,14 +5,13 @@ on:
     branches:
       - main
     paths:
-      - "**.py"
-      - "pytest.ini"
+      - "c339-ca1-parcel-delivery/**"
       - ".github/workflows/tests.yml"
   pull_request:
     paths:
-      - "**.py"
-      - "pytest.ini"
+      - "c339-ca1-parcel-delivery/**"
       - ".github/workflows/tests.yml"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -22,6 +20,9 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: c339-ca1-parcel-delivery
 
     steps:
       - name: Checkout repository
@@ -43,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-html-report
-          path: report.html
+          path: c339-ca1-parcel-delivery/report.html
