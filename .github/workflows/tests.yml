@@ -1,0 +1,47 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "c339-ca1-parcel-delivery/**"
+      - ".github/workflows/tests.yml"
+  pull_request:
+    paths:
+      - "c339-ca1-parcel-delivery/**"
+      - ".github/workflows/tests.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: c339-ca1-parcel-delivery
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pytest and pytest-html
+        run: pip install pytest pytest-html
+
+      - name: Run pytest
+        run: python -m pytest -v --html=report.html --self-contained-html
+
+      - name: Upload HTML test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-html-report
+          path: c339-ca1-parcel-delivery/report.html
